@@ -4,15 +4,12 @@ from pyglet import shapes
 from recognizer import Recognizer
 import sys
 import config as c
-import xml.etree.ElementTree as ET
 
 recognizer = Recognizer()
 recognizer.main()
 
-width = c.Window.WINDOW_WIDTH
-height = c.Window.WINDOW_HEIGHT
 title = "OneDollarRecognizer"
-window = pyglet.window.Window(width, height, title)
+window = pyglet.window.Window(c.Window.WINDOW_WIDTH, c.Window.WINDOW_HEIGHT, title)
 
 line = []
 
@@ -34,8 +31,8 @@ def on_mouse_release(x, y, button, modifiers):
             pyglet.text.Label(result[0],
                         font_name='Times New Roman',
                         font_size=36,
-                        x=width / 2,
-                        y=height - height/3,
+                        x=c.Window.WINDOW_WIDTH / 2,
+                        y=c.Window.WINDOW_HEIGHT - c.Window.WINDOW_HEIGHT/3,
                         anchor_x='center',
                         anchor_y='center',
                         color=(255, 255, 255, 1)).draw()

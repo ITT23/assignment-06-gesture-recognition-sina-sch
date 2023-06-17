@@ -3,9 +3,7 @@ import numpy as np
 import math
 from scipy.signal import resample
 from dollarpy import Recognizer
-from sklearn.preprocessing import LabelEncoder, StandardScaler
 import xml.etree.ElementTree as ET
-from tqdm.notebook import tqdm
 import os
 
 def load_data():
@@ -82,44 +80,17 @@ class Recognizer:
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
         return distance
 
-    # def calc_len(self, a):
-    #     d = 0
-    #     print("a", a)
-    #     for i in range(1, len(a)):
-    #         d = d + self.measure_distance(a[i-1][0], a[i-1][1], a[i][0], a[i][1])
-    #     return d
-
-    # def resample(points, n):
-    #     I = calc_len(points)/(n-1)
-    #     D = 0
-    #     new_points = points[1] #?
-    #     old_point = points[0]
-    #     for point in points:
-    #         d = measure_distance(point[0], point[1], old_point[0], old_point[1]) # measure distance
-    #         if D + d >= 1:
-    #             q_x = old_point[0] + ((I-D)/d) * (point[0] - old_point[0])
-    #             q_y = old_point[1] + ((I-D)/d) * (point[1] - old_point[1])
-    #             new_points.append((q_x, q_y))
-    #             #
-    #             D = 0
-    #         else:
-    #             D = D + d
-
-    #     return new_points
 
     # step 2
 
-    # get centroid !add source!
     def centroid(self, arr):
         length = len(arr)
-        #print(arr[0][1][0][0])
-        #print(arr[0][1][0][1])
         sum_x = np.sum(arr[:][0])
         sum_y = np.sum(arr[:][1])
         return sum_x/length, sum_y/length
 
     def indicative_angle(self, points):
-        c = np.mean(points, 0) #self.centroid(points) #np.mean(points, 0)
+        c = np.mean(points, 0)
         return np.arctan2(c[1] - points[0][1], c[0] - points[0][0])
     
     def rotateToZero(self, points):
@@ -134,9 +105,8 @@ class Recognizer:
         return np.dot(np.array(pts)-cnt, np.array([[np.cos(ang), np.sin(ang)], [-np.sin(ang), np.cos(ang)]]))+cnt
 
     def rotate_by(self, points, omega):
-        #new_points = []
         newPoints = np.zeros((1, 2))
-        c = np.mean(points, 0)#self.centroid(points)
+        c = np.mean(points, 0)
         for point in points:
             q_x = (point[0] - c[0]) * math.cos(omega) - (point[1] - c[1]) * math.sin(omega) + c[0]
             q_y = (point[0] - c[0]) * math.sin(omega) - (point[1] - c[1]) * math.cos(omega) + c[1]
@@ -148,12 +118,6 @@ class Recognizer:
     # step 3
 
     def bounding_box(self, points):
-        #print(points[:5])
-        #print(np.min(points))
-        # min_x = np.min(points)[0]
-        # max_x = np.max(points)[0]
-        # min_y = np.min(points)[1]
-        # max_y = np.max(points)[1]
         minX, maxX = np.inf, -np.inf
         minY, maxY = np.inf, -np.inf
         for point in points:
@@ -163,27 +127,21 @@ class Recognizer:
 
 
     def scale_to(self, points, size):
-        #new_points = [] # np.zeros((1, 2))
         newPoints = np.zeros((1, 2))
         min_x, max_x, min_y, max_y = self.bounding_box(points)
         for point in points:
             q_x = point[0] * size / (max_x - min_x)
             q_y = point[1] * size / (max_y - min_y)
-            #new_points.append([(q_x, q_y)])
             newPoints = np.append(newPoints, [(q_x, q_y)], 0)
 
         return newPoints
 
     def translate_to(self, points, k):
-        #new_points = []
         newPoints = np.zeros((1, 2))
-        c = np.mean(points, 0) #self.centroid(points)
-        #print("centroid", c)
-        #print("centr2", self.centroid(points))
+        c = np.mean(points, 0)
         for point in points:
             q_x = point[0] + k - c[0]
             q_y = point[1] + k - c[1]
-            #new_points.append([q_x, q_y])
             newPoints = np.append(newPoints, [(q_x, q_y)], 0)
 
         return newPoints[1:]
@@ -194,14 +152,12 @@ class Recognizer:
     def path_distance(self, A, B):
         d = 0
         for i in range(len(A) - 1):
-            #print("points", A[i][0], A[i][1], B[i][0], B[i][1])
             d += self.measure_distance(A[i][0], A[i][1], B[i][0], B[i][1])
 
         return d / len(A)
 
     def distance_at_angle(self, points, temp_points, theta):
         newPoints = np.zeros((1, 2))
-        #temp_name, temp_points = template
         new_points = self.rotate_by(points, theta)
         d = self.path_distance(new_points, temp_points)
         return d
@@ -231,13 +187,12 @@ class Recognizer:
         return min(f_1, f_2)
 
     def recognize(self, points):
-        # resampling, rotatetozero, scaleto, translateto?
         templates = self.templates
         points = resample(points, 50)
         points = self.rotateToZero(points)
         points = self.scale_to(points, 250)
         points = self.translate_to(points, 0)
-        b = np.inf #.inf
+        b = np.inf
         theta = np.pi/4
         delta_theta = np.pi/90
         size = 250
@@ -255,8 +210,4 @@ if __name__ == "__main__":
     #data = load_data()
     recognizer = Recognizer()
     recognizer.main()
-    #print(data[:4])
-    #new_points = recognizer.rotate_by(data, recognizer.indicative_angle(data))
-    #print(new_points[:4])
-
 

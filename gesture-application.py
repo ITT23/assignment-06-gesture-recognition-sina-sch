@@ -12,11 +12,8 @@ keyboard = Controller()
 recognizer = Recognizer()
 recognizer.main()
 
-
-width = c.Window.WINDOW_WIDTH
-height = c.Window.WINDOW_HEIGHT
 title = "RockPaperScissors"
-window = pyglet.window.Window(width, height, title)
+window = pyglet.window.Window(c.Window.WINDOW_WIDTH, c.Window.WINDOW_HEIGHT, title)
 
 line = []
 

@@ -5,11 +5,8 @@ import sys
 import config as c
 import xml.etree.ElementTree as ET
 
-
-width = c.Window.WINDOW_WIDTH
-height = c.Window.WINDOW_HEIGHT
 title = "OneDollarRecognizer"
-window = pyglet.window.Window(width, height, title)
+window = pyglet.window.Window(c.Window.WINDOW_WIDTH, c.Window.WINDOW_HEIGHT, title)
 
 line = []
 
