@@ -4,7 +4,7 @@ class Window:
 
 class Gestures:
     FIVE = ["star", "pigtail", "delete_mark", "arrow", "rectangle"]
-    THREE = ["star", "pigtail", "check"]#["caret", "v", "rectangle"]
+    THREE = ["pigtail", "rectangle", "check"]
 
 
 class RecognizerSetup:

@@ -6,7 +6,7 @@ import sys
 import config as c
 from pynput.keyboard import Key, Controller
 from Game import Game
-
+from unistroke_model import UniStroke
 
 keyboard = Controller()
 
@@ -41,9 +41,14 @@ def on_key_press(symbol, modifiers):
 def on_mouse_release(x, y, button, modifiers):
     window.clear()
     if pyglet.window.mouse.LEFT:
-        result, score = game.recognizer.recognize(line)
-        print(result[0])
-        if result[0] == game.currentGesture:
+        #result, score = game.recognizer.recognize(line)
+        #print(result[0])
+
+        #if result[0] == game.currentGesture:
+         #   print("success")
+          #  game.random_image()
+        prediction = game.recognizer.predict_gesture(game.recognizer.model_32, game.recognizer.encoder, line)
+        if prediction == game.currentGesture:
             print("success")
             game.random_image()
         line.clear()

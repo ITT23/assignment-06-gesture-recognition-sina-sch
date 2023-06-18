@@ -1,7 +1,8 @@
 import os
 import pyglet
 import random
-from recognizer import Recognizer
+#from recognizer import Recognizer
+from unistroke_model import UniStroke
 import config as c
 
 class Game:
@@ -26,8 +27,8 @@ class Game:
         self.currentImage = None
         self.startScreen = True
 
-        self.recognizer = Recognizer(c.Gestures.THREE)
-        self.recognizer.main()
+        self.recognizer = UniStroke()#Recognizer(c.Gestures.THREE)
+        #self.recognizer.main()
 
 
     def draw(self):
