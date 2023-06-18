@@ -1,1 +1,8 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/aaWv-gak)
+# 1 Implementing the Gesture Recognizer
+Start gesture-input.py and draw one of those shapes: . <br>
+If you want to continue drawing a new shape, press double space or double click in the window.
+
+# 2 Comparing Gesture Recognizers
+See notebook.
+
+# 3 Gesture Detection Game

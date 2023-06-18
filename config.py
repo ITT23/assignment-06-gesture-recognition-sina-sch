@@ -4,8 +4,8 @@ class Window:
 
 class Gestures:
     FIVE = ["star", "pigtail", "delete_mark", "arrow", "rectangle"]
-    THREE = ["caret", "v", "rectangle"]
+    THREE = ["star", "pigtail", "check"]#["caret", "v", "rectangle"]
 
 
 class RecognizerSetup:
-    NUM_POINTS = 50
+    NUM_POINTS = 64
