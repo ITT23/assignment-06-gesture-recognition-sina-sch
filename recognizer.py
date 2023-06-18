@@ -5,15 +5,12 @@ from scipy.signal import resample
 from dollarpy import Recognizer
 import xml.etree.ElementTree as ET
 import os
+from sklearn.preprocessing import StandardScaler
+import config as c
 
-def load_data():
-    # star, pigtial, delete_mark, arrow
+def load_data(gestures):
     data = []
     labels = []
-    #gestures = ["star", "pigtial", "delete_mark", "arrow", "rectangle"]
-    #gestures = ["circle", "rectangle", "x"]
-    gestures = ["caret", "v", "rectangle"]
-    NUM_POINTS = 50
 
     for root, subdirs, files in os.walk('dataset/xml_logs'):
         if 'ipynb_checkpoint' in root:
@@ -35,27 +32,30 @@ def load_data():
                         
                     points = np.array(points, dtype=float)
                     
-                    #scaler = StandardScaler()
-                    #points = scaler.fit_transform(points)
+                    scaler = StandardScaler()
+                    points = scaler.fit_transform(points)
                     
-                    resampled = resample(points, NUM_POINTS)
+                    resampled = resample(points, c.RecognizerSetup.NUM_POINTS)
                     
-                    if label in gestures:#not label in labels and label in gestures:
+                    if not label in labels and label in gestures:
                         data.append((label, resampled))
-                        #labels.append(label)
+                        labels.append(label)
+
+                    if len(labels) == len(gestures):
+                        print("all files loaded successfully", len(data))
+                        return data
 
     print("all files loaded successfully", len(data))
 
     return data
 
 class Recognizer:
-    def __init__(self):
+    def __init__(self, gestures):
         super(Recognizer, self).__init__()
-        self.templates = load_data()#[]
+        self.gestures = gestures
+        self.templates = load_data(self.gestures)
         self.new_templates = []
 
-    #def create_templates(self, data):
-        #for template
 
     def main(self):
         for template in self.templates:
@@ -63,18 +63,14 @@ class Recognizer:
     
     def addTemplate(self, template):
         name, points = template
-        NUM_POINTS = 50
         #print("name", name)
         #print("points", points)
-        #template[1] = resample(template[1], NUM_POINTS)
         points = self.rotateToZero(points)
         points = self.scale_to(points, 250)
         points = self.translate_to(points, 0)
         self.new_templates.append([name, points])
 
 # step 1
-    #def resample_points(self):
-     #   return resample()
 
     def measure_distance(self, x1, y1, x2, y2):
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
@@ -202,12 +198,11 @@ class Recognizer:
                 b = d
                 new_template = template
         score = 1 - b/0.5 * np.sqrt(size^2 + size^2)
-        return new_template#, score
+        return new_template, score
 
 
 
 if __name__ == "__main__":
-    #data = load_data()
-    recognizer = Recognizer()
+    recognizer = Recognizer(c.Gestures.FIVE)
     recognizer.main()
 
