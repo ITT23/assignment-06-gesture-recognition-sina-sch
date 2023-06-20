@@ -6,3 +6,4 @@ If you want to continue drawing a new shape, press double space or double click 
 See notebook.
 
 # 3 Gesture Detection Game
+Annoying minigame to learn new spells :).
