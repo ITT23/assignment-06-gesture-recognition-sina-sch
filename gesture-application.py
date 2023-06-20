@@ -1,17 +1,9 @@
 # application for task 3
 import pyglet
-from pyglet import shapes
-from recognizer import Recognizer
 import sys
 import config as c
-from pynput.keyboard import Key, Controller
 from Game import Game
-from unistroke_model import UniStroke
 
-keyboard = Controller()
-
-# recognizer = Recognizer()
-# recognizer.main()
 
 title = "HarryPotter"
 window = pyglet.window.Window(c.Window.WINDOW_WIDTH * 2, c.Window.WINDOW_HEIGHT, title)
@@ -27,9 +19,8 @@ def on_draw():
 
 @window.event
 def on_key_press(symbol, modifiers):
-    if symbol == pyglet.window.key.SPACE:
-        line.clear()
-    elif symbol == pyglet.window.key.S:
+    if symbol == pyglet.window.key.S:
+        # start game
         game.startScreen = False
         game.random_image()
     elif symbol == pyglet.window.key.Q:
@@ -41,15 +32,10 @@ def on_key_press(symbol, modifiers):
 def on_mouse_release(x, y, button, modifiers):
     window.clear()
     if pyglet.window.mouse.LEFT:
-        #result, score = game.recognizer.recognize(line)
-        #print(result[0])
-
-        #if result[0] == game.currentGesture:
-         #   print("success")
-          #  game.random_image()
         prediction = game.recognizer.predict_gesture(game.recognizer.model_32, game.recognizer.encoder, line)
+        # if gesture is recognized as the one currently specified, increase the score and display new image
         if prediction == game.currentGesture:
-            print("success")
+            game.score += 20
             game.random_image()
         line.clear()
 
@@ -58,11 +44,8 @@ def on_mouse_release(x, y, button, modifiers):
 
 @window.event
 def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
-    game.draw()
     if buttons & pyglet.window.mouse.LEFT:
         line.append([int(x), int(y)])
-        point = shapes.Circle(x, y, radius=5, color=(255, 225, 255), batch=game.batch)
-        point.draw()
 
 
 pyglet.app.run()
